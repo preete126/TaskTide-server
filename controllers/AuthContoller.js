@@ -7,6 +7,8 @@ const {readFileSync} = require("fs")
 const { join } = require("path")
 const { root_path } = require("../global.config")
 const jwt = require("jsonwebtoken")
+const { BASE64PP } = require("../config/env")
+const {Buffer} = require("buffer")
 
 
 
@@ -70,9 +72,12 @@ module.exports.Login = async (req, res)=>{
             name: user.name,
             id: user._id
         }
-       const privatePem = readFileSync(join(root_path, "private.pem"))
-        let private_key;
-        const token = jwt.sign(payload, private_key || privatePem, {algorithm: JWT_ALGORITHM, expiresIn:3600})
+    //    const privatePem = readFileSync(join(root_path, "private.pem"))
+        if (!BASE64PP) {
+            throw new Error('Private key not found in environment variables');
+        }
+        const private_key = Buffer.from(BASE64PP, "base64").toString("utf-8")
+        const token = jwt.sign(payload, private_key , {algorithm: JWT_ALGORITHM, expiresIn:3600})
         user.password = null
         res.status(HttpStatusCodes.SUCCESS).json({message:"User login successful", token:token, user:user})
 
