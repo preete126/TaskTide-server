@@ -77,7 +77,6 @@ module.exports.Login = async (req, res)=>{
 
     } catch (error) {
         console.log(error)
-        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
-        .json({message: "An unexpected error occured"})
+       return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({message: "An unexpected error occured"})
     }
 }
