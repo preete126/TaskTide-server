@@ -70,8 +70,9 @@ module.exports.Login = async (req, res)=>{
             name: user.name,
             id: user._id
         }
-        const private_key = readFileSync(join(root_path, "private.pem"))
-        const token = jwt.sign(payload, private_key, {algorithm: JWT_ALGORITHM, expiresIn:3600})
+       const privatePem = readFileSync(join(root_path, "private.pem"))
+        let private_key;
+        const token = jwt.sign(payload, private_key || privatePem, {algorithm: JWT_ALGORITHM, expiresIn:3600})
         user.password = null
         res.status(HttpStatusCodes.SUCCESS).json({message:"User login successful", token:token, user:user})
 
